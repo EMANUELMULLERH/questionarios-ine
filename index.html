@@ -1,0 +1,430 @@
+teste 123<title>Questionários INE</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,600&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: coluna única estreita, um passo por vez (Identificação → Parte 1 → Parte 2 → Enviar), escala 0–10 em grade de 11 */
+:root{
+  --bg:#f4f6f5; --surface:#ffffff; --ink:#1c2422; --muted:#5d6a66; --line:#d9e0dd;
+  --accent:#2f5d50; --accent-ink:#ffffff; --p1:#4a5d8a; --p1-soft:#e8ecf5; --p2:#2f5d50; --p2-soft:#e3efea;
+  --warn:#a23b3b; --warn-soft:#f8e9e9; --chip:#eef2f0;
+  --f-display:"Literata", Georgia, "Times New Roman", serif;
+  --f-body:"Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#131917; --surface:#1b2321; --ink:#e7ecea; --muted:#9caaa5; --line:#2d3835;
+  --accent:#7fb8a5; --accent-ink:#0f1a16; --p1:#9fb1df; --p1-soft:#222a3b; --p2:#7fb8a5; --p2-soft:#1f2f2a;
+  --warn:#ef8f8f; --warn-soft:#3a2224; --chip:#222c29; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#131917; --surface:#1b2321; --ink:#e7ecea; --muted:#9caaa5; --line:#2d3835;
+  --accent:#7fb8a5; --accent-ink:#0f1a16; --p1:#9fb1df; --p1-soft:#222a3b; --p2:#7fb8a5; --p2-soft:#1f2f2a;
+  --warn:#ef8f8f; --warn-soft:#3a2224; --chip:#222c29; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header.top{display:flex;flex-direction:column;gap:6px}
+.brand{font-weight:700;letter-spacing:.18em;font-size:12px;color:var(--accent);text-transform:uppercase}
+h1{font-family:var(--f-display);font-weight:600;font-size:clamp(24px,6vw,32px);line-height:1.15;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:0}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.steps div{font-size:12px;font-weight:600;color:var(--muted);border-top:3px solid var(--line);padding-top:6px;text-transform:uppercase;letter-spacing:.06em}
+.steps div.on{color:var(--ink);border-color:var(--accent)}
+.steps div.done{border-color:var(--accent);opacity:.6}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:16px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:600}
+.field .hint{font-size:13px;color:var(--muted)}
+input[type=text],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;width:100%}
+textarea{min-height:96px;resize:vertical}
+input:focus,textarea:focus{outline:none;border-color:var(--accent)}
+.part-banner{border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+.part-banner.p1{background:var(--p1-soft);color:var(--ink);border-left:0}
+.part-banner.p2{background:var(--p2-soft)}
+.part-banner .tag{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.p1 .tag{color:var(--p1)} .p2 .tag{color:var(--p2)}
+.part-banner h2{font-family:var(--f-display);font-weight:600;font-size:22px;margin:0}
+.part-banner p{margin:0}
+.instr{font-size:15px;color:var(--muted);margin:0}
+.q{display:flex;flex-direction:column;gap:10px;padding-block:16px;border-top:1px solid var(--line)}
+.q:first-of-type{border-top:0;padding-top:0}
+.q.missing .qt{color:var(--warn)}
+.q.missing .scale button:not(.sel), .q.missing .yn button:not(.sel){border-color:var(--warn)}
+.qt{font-weight:500;margin:0}
+.qt .n{font-weight:700;color:var(--muted);margin-right:4px;font-variant-numeric:tabular-nums}
+.qnote{font-size:13px;color:var(--warn);font-weight:600}
+.scale{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:4px}
+.scale button,.yn button{font:inherit;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink);background:var(--chip);border:1.5px solid transparent;border-radius:8px;min-height:44px;padding:0;cursor:pointer}
+.scale.pct button{font-size:13px}
+.scale button:hover,.yn button:hover{border-color:var(--accent)}
+.scale button.sel,.yn button.sel{background:var(--accent);color:var(--accent-ink)}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.ends{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:var(--muted)}
+.ends span:last-child{text-align:right}
+.yn{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:320px}
+.subq{padding-left:12px;border-left:2px solid var(--line)}
+.body-tools{display:flex;flex-wrap:wrap;gap:8px}
+.tool{font:inherit;font-size:14px;font-weight:600;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 14px;cursor:pointer}
+.tool.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.canvas-wrap{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.canvas-wrap canvas{display:block;width:100%;height:auto;touch-action:none;cursor:crosshair}
+.nav{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap}
+.btn{font:inherit;font-weight:600;font-size:16px;border-radius:12px;padding:14px 22px;border:1.5px solid var(--accent);cursor:pointer;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:default}
+.alert{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:12px 14px;font-weight:600}
+.done-box{text-align:left}
+.summary{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+.summary th,.summary td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left}
+.summary td:not(:first-child),.summary th:not(:first-child){text-align:center;width:70px}
+.tablewrap{overflow-x:auto}
+.small{font-size:13px;color:var(--muted)}
+.copy{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+@media (max-width:380px){.scale{gap:3px}.scale button{font-size:14px;min-height:42px}.scale.pct button{font-size:11px}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Instituto INE · Lipedema</div>
+    <h1 id="title"></h1>
+    <p class="sub" id="subtitle"></p>
+  </header>
+  <div class="steps" id="steps"><div>Dados</div><div>Parte 1</div><div>Parte 2</div><div>Enviar</div></div>
+  <main id="view"></main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script>
+const ALL = {"quasil":{"id":"quasil","short":"QuASiL","filePrefix":"QuASiL","title":"Questionário de Avaliação Sintomática do Lipedema (QuASiL)","pdfTitle":"Questionário de Avaliação Sintomática do Lipedema (QuASiL)","subtitle":"15 perguntas, cerca de 5 minutos.","intro":"Este questionário avalia os sintomas do lipedema. Suas respostas fazem parte da pesquisa do Instituto INE e ajudam a medir a evolução do seu tratamento.","instructions":"Gradue seus sintomas de 0 (não) a 10 (muito). Se o critério for variável, selecione a intensidade máxima que você sente.","prontuario":false,"painGate":false,"items":[{"type":"scale","id":"q1","n":"1.","text":"As áreas afetadas são dolorosas?","lo":"Não","hi":"Muito"},{"type":"scale","id":"q2","n":"2.","text":"As áreas afetadas são sensíveis ao toque ou à pressão?","lo":"Não","hi":"Muito"},{"type":"scale","id":"q3","n":"3.","text":"Você tende a ter manchas roxas facilmente e frequentes nas pernas? (Hematomas, equimoses)","lo":"Não","hi":"Muito"},{"type":"scale","id":"q4","n":"4.","text":"Você sente \"pressão\" ou \"tensão\" nas pernas?","lo":"Não","hi":"Muito"},{"type":"scale","id":"q5","n":"5.","text":"Sente as pernas \"quentes\" ou sensação de \"queimação\"?","lo":"Não","hi":"Muito"},{"type":"scale","id":"q6","n":"6.","text":"Sente suas pernas frias?","lo":"Não","hi":"Muito"},{"type":"scale","id":"q7","n":"7.","text":"Tem câimbras musculares?","lo":"Não","hi":"Muito frequente"},{"type":"scale","id":"q8","n":"8.","text":"Sente peso nas pernas?","lo":"Não","hi":"Muito"},{"type":"scale","id":"q9","n":"9.","text":"Sente cansaço nas pernas?","lo":"Não","hi":"Muito"},{"type":"scale","id":"q10","n":"10.","text":"Sente inchaço nas pernas?","lo":"Não","hi":"Muito"},{"type":"scale","id":"q11","n":"11.","text":"Tem \"irritações\" na pele?","lo":"Não","hi":"Muita"},{"type":"scale","id":"q12","n":"12.","text":"Sente coceira?","lo":"Não","hi":"Muita"},{"type":"scale","id":"q13","n":"13.","text":"Tem dificuldade para caminhar? Alguma limitação de movimento?","lo":"Não","hi":"Gravemente"},{"type":"scale","id":"q14","n":"14.","text":"Como a condição afeta sua qualidade de vida?","lo":"Nada","hi":"Gravemente"},{"type":"scale","id":"q15","n":"15.","text":"Está satisfeita com a aparência das pernas?","lo":"Muito satisfeita","hi":"Insatisfeita","attn":"Atenção: aqui 0 = muito satisfeita e 10 = insatisfeita."}],"scores":[{"label":"Pontuação total QuASiL (0 a 150)","ids":["q1","q2","q3","q4","q5","q6","q7","q8","q9","q10","q11","q12","q13","q14","q15"],"kind":"sum"}],"scoreNote":"Pontuação total = soma das 15 respostas. Quanto maior, mais sintomas (a questão 15 já é pontuada no mesmo sentido: 10 = insatisfeita)."},"dor":{"id":"bpi","short":"Inventário Breve de Dor","filePrefix":"Inventario_Dor","title":"Inventário Breve de Dor","pdfTitle":"Inventário Breve de Dor - Versão Reduzida","subtitle":"Versão reduzida, cerca de 7 minutos.","intro":"Este questionário avalia a sua dor e como ela interfere no seu dia a dia. Suas respostas fazem parte da pesquisa do Instituto INE e ajudam a medir a evolução do seu tratamento.","instructions":"","p1note":"Quando a pergunta falar em \"hoje\", \"agora\" ou \"últimas 24 horas\", pense em um dia típico daquela época, antes do tratamento.","prontuario":true,"painGate":true,"items":[{"type":"yesno","id":"q1","n":"1)","text":"Durante a vida, a maioria de nós já sentiu dor de vez em quando (como dor de cabeça leve, torções e dor de dente). Hoje, você teve alguma dor diferente desses tipos de dor do dia a dia?","short":"Teve dor diferente das dores do dia a dia?"},{"type":"body","id":"q2","n":"2)","text":"No diagrama, sombreie as áreas onde você sente dor. Marque com um X a área que mais dói.","short":"Diagrama: áreas de dor"},{"type":"scale","id":"q3","n":"3)","text":"Por favor, avalie sua dor marcando o número que melhor descreve a sua dor no seu *pior* momento nas últimas 24 horas.","lo":"Sem dor","hi":"Pior dor que se pode imaginar","short":"Dor no PIOR momento (24 h)"},{"type":"scale","id":"q4","n":"4)","text":"Por favor, avalie sua dor marcando o número que melhor descreve a sua dor no seu *menor* momento nas últimas 24 horas.","lo":"Sem dor","hi":"Pior dor que se pode imaginar","short":"Dor no MENOR momento (24 h)"},{"type":"scale","id":"q5","n":"5)","text":"Por favor, avalie sua dor marcando o número que melhor descreve a sua dor em *média*.","lo":"Sem dor","hi":"Pior dor que se pode imaginar","short":"Dor em MÉDIA"},{"type":"scale","id":"q6","n":"6)","text":"Por favor, avalie sua dor marcando o número que mostra quanta dor você está sentindo *agora*.","lo":"Sem dor","hi":"Pior dor que se pode imaginar","short":"Dor AGORA"},{"type":"text","id":"q7","n":"7)","text":"Quais tratamentos ou medicamentos você está recebendo para a sua dor?","short":"Tratamentos/medicamentos para a dor"},{"type":"scale","id":"q8","n":"8)","text":"Nas últimas 24 horas, quanto *alívio* os tratamentos ou medicamentos para dor proporcionaram? Marque a porcentagem que melhor mostra quanto alívio você teve.","lo":"Sem alívio","hi":"Alívio completo","short":"Alívio com tratamentos (24 h)","pct":true,"optional":true},{"type":"group","n":"9)","text":"Marque o número que descreve como, nas últimas 24 horas, a dor *interferiu* na sua:","items":[{"type":"scale","id":"q9a","n":"A.","text":"Atividade geral","lo":"Não interferiu","hi":"Interferiu completamente"},{"type":"scale","id":"q9b","n":"B.","text":"Humor","lo":"Não interferiu","hi":"Interferiu completamente"},{"type":"scale","id":"q9c","n":"C.","text":"Capacidade de caminhar","lo":"Não interferiu","hi":"Interferiu completamente"},{"type":"scale","id":"q9d","n":"D.","text":"Trabalho normal (inclui tanto o trabalho fora de casa quanto as tarefas domésticas)","lo":"Não interferiu","hi":"Interferiu completamente","short":"Trabalho normal (fora e dentro de casa)"},{"type":"scale","id":"q9e","n":"E.","text":"Relacionamento com outras pessoas","lo":"Não interferiu","hi":"Interferiu completamente"},{"type":"scale","id":"q9f","n":"F.","text":"Sono","lo":"Não interferiu","hi":"Interferiu completamente"},{"type":"scale","id":"q9g","n":"G.","text":"Prazer de viver","lo":"Não interferiu","hi":"Interferiu completamente"}]}],"scores":[{"label":"Intensidade da dor (média das questões 3 a 6, 0 a 10)","ids":["q3","q4","q5","q6"],"kind":"mean","skipIfNoPain":true},{"label":"Interferência da dor (média das questões 9A a 9G, 0 a 10)","ids":["q9a","q9b","q9c","q9d","q9e","q9f","q9g"],"kind":"mean","skipIfNoPain":true}],"scoreNote":"Escores do Inventário Breve de Dor: intensidade = média dos itens 3-6; interferência = média dos itens 9A-9G. Quanto maior, pior."}};
+const CFG = ALL[(location.hash||"").slice(1)] || null;
+window.addEventListener("hashchange",()=>location.reload());
+if(!CFG){ document.getElementById("title").textContent="Questionários de pesquisa"; document.getElementById("subtitle").textContent="Escolha o questionário indicado pela clínica."; document.getElementById("steps").hidden=true;
+  document.getElementById("view").innerHTML=`<section class="card">${Object.entries(ALL).map(([k,c])=>`<a class="btn" style="text-decoration:none;text-align:center" href="#${k}">${c.title}</a>`).join("")}</section>`; throw new Error("sem questionario"); }
+const BODY_IMG = "data:image/png;base64,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";
+
+const PARTS = {
+  p1:{tag:"Parte 1", name:"No início do tratamento", cls:"p1",
+      text:"Responda lembrando de como você se sentia <strong>antes de começar o tratamento</strong> do lipedema.",
+      note:CFG.p1note||""},
+  p2:{tag:"Parte 2", name:"Agora", cls:"p2",
+      text:"Responda pensando em como você está <strong>hoje</strong>, no momento atual do tratamento.",
+      note:""}
+};
+const STORE_KEY = "ine-"+CFG.id+"-rascunho";
+let state = load() || {step:0, nome:"", inicio:"", prontuario:"", p1:{}, p2:{}, body:{p1:{strokes:[],x:null},p2:{strokes:[],x:null}}};
+let showMissing = false;
+
+function load(){ try{ const s=localStorage.getItem(STORE_KEY); return s?JSON.parse(s):null }catch(e){ return null } }
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)) }catch(e){} }
+function esc(s){ return String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])) }
+function fmt(t){ return esc(t).replace(/\*(.+?)\*/g,"<strong>$1</strong>") }
+function plain(t){ return String(t).replace(/\*/g,"") }
+
+document.getElementById("title").textContent = CFG.title;
+document.getElementById("subtitle").textContent = CFG.subtitle;
+
+function painOff(part){ return CFG.painGate && state[part].q1==="Não" }
+function isRequired(item, part){
+  if(item.optional) return false;
+  if(item.type==="body"||item.type==="text") return false;
+  if(painOff(part) && item.id!=="q1") return false;
+  return true;
+}
+function flatItems(){ const out=[]; CFG.items.forEach(it=>{ if(it.type==="group") it.items.forEach(s=>out.push(s)); else out.push(it) }); return out }
+function missing(part){ return flatItems().filter(it=>isRequired(it,part) && (state[part][it.id]===undefined || state[part][it.id]==="")) }
+
+function render(){
+  const v=document.getElementById("view");
+  [...document.getElementById("steps").children].forEach((d,i)=>{ d.className = i===state.step?"on":(i<state.step?"done":"") });
+  if(state.step===0) v.innerHTML = viewIdent();
+  else if(state.step===1) v.innerHTML = viewPart("p1");
+  else if(state.step===2) v.innerHTML = viewPart("p2");
+  else v.innerHTML = viewDone();
+  bind();
+}
+
+function viewIdent(){
+  return `<section class="card">
+    <p class="instr">${esc(CFG.intro)}</p>
+    <p class="instr">O questionário tem duas partes iguais: na <strong>Parte 1</strong> você responde como estava <strong>no início do tratamento</strong>; na <strong>Parte 2</strong>, como está <strong>agora</strong>. No final, um PDF com suas respostas é gerado para você enviar à clínica.</p>
+    <div class="field"><label for="nome">Nome completo</label><input type="text" id="nome" autocomplete="name" value="${esc(state.nome)}"></div>
+    <div class="field"><label for="inicio">Quando começou o tratamento? <span class="small">(mês/ano, aproximado)</span></label><input type="text" id="inicio" placeholder="ex.: março/2026" value="${esc(state.inicio)}"></div>
+    ${CFG.prontuario?`<div class="field"><label for="prontuario">Prontuário <span class="small">(opcional, se souber)</span></label><input type="text" id="prontuario" value="${esc(state.prontuario)}"></div>`:""}
+    ${showMissing && !state.nome.trim()?`<div class="alert">Preencha seu nome para continuar.</div>`:""}
+    <div class="nav"><span></span><button class="btn" data-go="1">Começar Parte 1</button></div>
+  </section>`;
+}
+
+function scaleHtml(item, part){
+  const val = state[part][item.id];
+  const vals = item.pct ? [0,10,20,30,40,50,60,70,80,90,100] : [0,1,2,3,4,5,6,7,8,9,10];
+  return `<div class="scale${item.pct?" pct":""}" role="radiogroup" aria-label="${esc(plain(item.text))}">
+    ${vals.map(n=>`<button type="button" role="radio" aria-checked="${val===n}" class="${val===n?"sel":""}" data-part="${part}" data-q="${item.id}" data-v="${n}">${n}${item.pct&&(n===0||n===100)?"%":""}</button>`).join("")}
+  </div><div class="ends"><span>${esc(item.lo)}</span><span>${esc(item.hi)}</span></div>`;
+}
+
+function itemHtml(item, part, sub){
+  const miss = showMissing && isRequired(item,part) && (state[part][item.id]===undefined);
+  let inner="";
+  if(item.type==="scale") inner = scaleHtml(item,part);
+  else if(item.type==="yesno"){
+    const val=state[part][item.id];
+    inner = `<div class="yn" role="radiogroup">${["Sim","Não"].map(o=>`<button type="button" class="${val===o?"sel":""}" data-part="${part}" data-q="${item.id}" data-v="${o}">${o}</button>`).join("")}</div>`;
+    if(CFG.painGate && val==="Não") inner += `<div class="small">Se não sentia/sente dor, as próximas perguntas desta parte ficam opcionais.</div>`;
+  }
+  else if(item.type==="text") inner = `<textarea id="t-${part}-${item.id}" data-part="${part}" data-q="${item.id}" placeholder="Escreva aqui (opcional)">${esc(state[part][item.id]||"")}</textarea>`;
+  else if(item.type==="body") inner = `<div class="body-tools">
+      <button type="button" class="tool on" data-tool="paint" data-part="${part}">Pintar onde dói</button>
+      <button type="button" class="tool" data-tool="x" data-part="${part}">X onde mais dói</button>
+      <button type="button" class="tool" data-act="undo" data-part="${part}">Desfazer</button>
+      <button type="button" class="tool" data-act="clear" data-part="${part}">Limpar</button></div>
+      <div class="canvas-wrap"><canvas id="cv-${part}" width="888" height="617" aria-label="Diagrama do corpo, frente e costas"></canvas></div>
+      <div class="small">Passe o dedo sobre as áreas com dor. Depois escolha “X onde mais dói” e toque no ponto de maior dor.</div>`;
+  return `<div class="q${sub?" subq":""}${miss?" missing":""}" id="q-${part}-${item.id}">
+    <p class="qt">${item.n?`<span class="n">${esc(item.n)}</span>`:""}${fmt(item.text)}</p>
+    ${item.attn?`<div class="qnote">${esc(item.attn)}</div>`:""}
+    ${inner}</div>`;
+}
+
+function viewPart(part){
+  const P=PARTS[part], m=showMissing?missing(part):[];
+  let qs="";
+  CFG.items.forEach(it=>{
+    if(it.type==="group"){ qs += `<div class="q"><p class="qt"><span class="n">${esc(it.n)}</span>${fmt(it.text)}</p></div>` + it.items.map(s=>itemHtml(s,part,true)).join("") }
+    else qs += itemHtml(it,part,false);
+  });
+  return `<div class="wrap" style="gap:16px">
+    <div class="part-banner ${P.cls}"><span class="tag">${P.tag}</span><h2>${P.name}</h2><p>${P.text}</p>${P.note?`<p class="small">${esc(P.note)}</p>`:""}</div>
+    <section class="card">
+      ${CFG.instructions?`<p class="instr">${esc(CFG.instructions)}</p>`:""}
+      ${qs}
+    </section>
+    ${m.length?`<div class="alert">Falta responder ${m.length} pergunta${m.length>1?"s":""} (marcadas em vermelho).</div>`:""}
+    <div class="nav">
+      <button class="btn ghost" data-go="${state.step-1}">Voltar</button>
+      <button class="btn" data-go="${state.step+1}">${part==="p1"?"Ir para a Parte 2":"Concluir e gerar PDF"}</button>
+    </div></div>`;
+}
+
+function scoreRows(){
+  return (CFG.scores||[]).map(s=>[s.label, calcScore(s,"p1"), calcScore(s,"p2")]);
+}
+function calcScore(s, part){
+  if(painOff(part) && s.skipIfNoPain) return "-";
+  const vals = s.ids.map(id=>state[part][id]).filter(v=>typeof v==="number");
+  if(!vals.length) return "-";
+  const sum = vals.reduce((a,b)=>a+b,0);
+  if(s.kind==="sum") return vals.length===s.ids.length ? String(sum) : sum+"*";
+  return (sum/vals.length).toFixed(1).replace(".",",");
+}
+
+function viewDone(){
+  const rows = scoreRows();
+  return `<section class="card done-box">
+    <div class="part-banner p2"><span class="tag">Pronto</span><h2>Obrigada, ${esc(state.nome.split(" ")[0])}!</h2><p>Suas respostas estão completas. Agora envie o PDF para a clínica.</p></div>
+    ${rows.length?`<div class="tablewrap"><table class="summary"><thead><tr><th>Resumo</th><th>Início</th><th>Agora</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r[0])}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("")}</tbody></table></div>`:""}
+    <div class="nav" id="send-actions" style="justify-content:flex-start">
+      <button class="btn" id="btn-share" hidden>Enviar PDF (WhatsApp, e-mail…)</button>
+      <button class="btn" id="btn-save" hidden>Salvar PDF</button>
+      <button class="btn ghost" id="btn-download" hidden>Baixar PDF</button>
+    </div>
+    <div id="send-msg" class="small"></div>
+    <p class="small">Depois de salvar, envie o arquivo para o WhatsApp da clínica.</p>
+    <div class="nav"><button class="btn ghost" data-go="2">Revisar respostas</button><button class="btn ghost" id="btn-reset">Apagar e começar de novo</button></div>
+  </section>`;
+}
+
+/* ---------- interação ---------- */
+const tools = {p1:"paint", p2:"paint"};
+function bind(){
+  document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(+b.dataset.go));
+  document.querySelectorAll(".scale button,.yn button").forEach(b=>b.onclick=()=>{
+    const part=b.dataset.part, q=b.dataset.q, raw=b.dataset.v;
+    state[part][q] = isNaN(+raw)?raw:+raw; save();
+    const grp=b.parentElement; grp.querySelectorAll("button").forEach(x=>{x.classList.toggle("sel",x===b); x.setAttribute("aria-checked", x===b)});
+    const qel=document.getElementById(`q-${part}-${q}`); if(qel) qel.classList.remove("missing");
+    if(b.parentElement.classList.contains("yn") && CFG.painGate){ const y=window.scrollY; render(); window.scrollTo(0,y) }
+  });
+  document.querySelectorAll("textarea[data-q]").forEach(t=>t.oninput=()=>{ state[t.dataset.part][t.dataset.q]=t.value; save() });
+  ["nome","inicio","prontuario"].forEach(k=>{ const el=document.getElementById(k); if(el) el.oninput=()=>{ state[k]=el.value; save() } });
+  ["p1","p2"].forEach(part=>{ if(document.getElementById("cv-"+part)) setupCanvas(part) });
+  document.querySelectorAll("[data-tool]").forEach(b=>b.onclick=()=>{ tools[b.dataset.part]=b.dataset.tool; document.querySelectorAll(`[data-tool][data-part="${b.dataset.part}"]`).forEach(x=>x.classList.toggle("on",x===b)) });
+  document.querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>{
+    const bd=state.body[b.dataset.part];
+    if(b.dataset.act==="clear"){ bd.strokes=[]; bd.x=null }
+    else { if(bd.lastWasX && bd.x){ bd.x=null; bd.lastWasX=false } else bd.strokes.pop() }
+    save(); drawCanvas(b.dataset.part);
+  });
+  if(state.step===3) setupSend();
+  const r=document.getElementById("btn-reset"); if(r) r.onclick=()=>{
+    if(r.dataset.confirm){ try{localStorage.removeItem(STORE_KEY)}catch(e){} state={step:0,nome:"",inicio:"",prontuario:"",p1:{},p2:{},body:{p1:{strokes:[],x:null},p2:{strokes:[],x:null}}}; showMissing=false; render(); window.scrollTo(0,0) }
+    else { r.dataset.confirm="1"; r.textContent="Toque de novo para apagar tudo" }
+  };
+}
+
+function go(step){
+  if(step>state.step){
+    if(state.step===0 && !state.nome.trim()){ showMissing=true; render(); return }
+    if(state.step===1 || state.step===2){
+      const part = state.step===1?"p1":"p2";
+      const m = missing(part);
+      if(m.length){ showMissing=true; render(); const el=document.getElementById(`q-${part}-${m[0].id}`); if(el) el.scrollIntoView({block:"center"}); return }
+    }
+  }
+  showMissing=false; state.step=Math.max(0,Math.min(3,step)); save(); render(); window.scrollTo(0,0);
+}
+
+/* ---------- diagrama do corpo ---------- */
+const bodyImg = new Image(); bodyImg.src = BODY_IMG;
+function drawCanvas(part, target){
+  const cv = target || document.getElementById("cv-"+part); if(!cv) return;
+  const ctx=cv.getContext("2d"), W=cv.width, H=cv.height, bd=state.body[part];
+  ctx.fillStyle="#fff"; ctx.fillRect(0,0,W,H);
+  if(bodyImg.complete) ctx.drawImage(bodyImg,0,0,W,H);
+  if(bd.strokes.length){
+    const layer=document.createElement("canvas"); layer.width=W; layer.height=H;
+    const l=layer.getContext("2d"); l.strokeStyle="#d23a4a"; l.fillStyle="#d23a4a"; l.lineWidth=22; l.lineCap="round"; l.lineJoin="round";
+    bd.strokes.forEach(s=>{ if(s.length===1){ l.beginPath(); l.arc(s[0][0],s[0][1],11,0,7); l.fill() } else { l.beginPath(); l.moveTo(s[0][0],s[0][1]); s.slice(1).forEach(p=>l.lineTo(p[0],p[1])); l.stroke() } });
+    ctx.globalAlpha=0.45; ctx.drawImage(layer,0,0); ctx.globalAlpha=1;
+  }
+  if(bd.x){ const [x,y]=bd.x, r=16; ctx.strokeStyle="#7a0d1a"; ctx.lineWidth=7; ctx.lineCap="round";
+    ctx.beginPath(); ctx.moveTo(x-r,y-r); ctx.lineTo(x+r,y+r); ctx.moveTo(x+r,y-r); ctx.lineTo(x-r,y+r); ctx.stroke() }
+}
+function setupCanvas(part){
+  const cv=document.getElementById("cv-"+part); let cur=null;
+  const pos=e=>{ const r=cv.getBoundingClientRect(); return [ (e.clientX-r.left)*cv.width/r.width, (e.clientY-r.top)*cv.height/r.height ] };
+  cv.onpointerdown=e=>{ e.preventDefault(); const p=pos(e), bd=state.body[part];
+    if(tools[part]==="x"){ bd.x=p; bd.lastWasX=true; save(); drawCanvas(part); return }
+    cur=[p]; bd.strokes.push(cur); bd.lastWasX=false; cv.setPointerCapture(e.pointerId); drawCanvas(part) };
+  cv.onpointermove=e=>{ if(!cur) return; cur.push(pos(e)); drawCanvas(part) };
+  cv.onpointerup=cv.onpointercancel=()=>{ if(cur){ cur=null; save() } };
+  if(bodyImg.complete) drawCanvas(part); else bodyImg.onload=()=>drawCanvas(part);
+}
+
+/* ---------- PDF ---------- */
+function ascii(s){ return String(s).replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/[–—]/g,"-").replace(/\*/g,"") }
+function answerText(item, part){
+  const v=state[part][item.id];
+  if(v===undefined||v==="") return painOff(part)&&item.id!=="q1" ? "-" : "-";
+  if(item.pct) return v+"%";
+  return String(v);
+}
+function diff(item){
+  const a=state.p1[item.id], b=state.p2[item.id];
+  if(typeof a!=="number"||typeof b!=="number") return "";
+  const d=b-a; return (d>0?"+":"")+d+(item.pct?"%":"");
+}
+function buildPdf(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:"mm", format:"a4"});
+  const M=14, W=210;
+  const now=new Date(), dt=now.toLocaleDateString("pt-BR"), hr=now.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+  doc.setFillColor(47,93,80); doc.rect(0,0,W,4,"F");
+  doc.setFont("helvetica","bold"); doc.setFontSize(9); doc.setTextColor(47,93,80);
+  doc.text("INSTITUTO INE  ·  PESQUISA LIPEDEMA".replace("·","-"), M, 13);
+  doc.setFontSize(15); doc.setTextColor(28,36,34);
+  doc.text(doc.splitTextToSize(ascii(CFG.pdfTitle), W-2*M), M, 21);
+  let y=21+ (doc.splitTextToSize(ascii(CFG.pdfTitle), W-2*M).length)*6.5;
+  doc.setFont("helvetica","normal"); doc.setFontSize(10); doc.setTextColor(60,70,66);
+  const info=[["Paciente",state.nome.trim()],["Respondido em",dt+" às "+hr],["Início do tratamento",state.inicio.trim()||"não informado"]];
+  if(CFG.prontuario) info.push(["Prontuário",state.prontuario.trim()||"-"]);
+  info.forEach(([k,v])=>{ doc.setFont("helvetica","bold"); doc.text(k+":",M,y); doc.setFont("helvetica","normal"); doc.text(ascii(v),M+40,y); y+=5.5 });
+  y+=1;
+  doc.setFontSize(9); doc.setTextColor(93,106,102);
+  doc.text(doc.splitTextToSize("Parte 1 (Início): respostas sobre como a paciente estava no início do tratamento. Parte 2 (Agora): como está no momento da resposta. Diferença = Agora - Início.", W-2*M), M, y);
+  y+=10;
+
+  const body=[];
+  CFG.items.forEach(it=>{
+    if(it.type==="group"){ body.push([{content:it.n+" "+ascii(it.text), colSpan:5, styles:{fontStyle:"bold",fillColor:[238,242,240]}}]); it.items.forEach(s=>body.push([s.n, ascii(s.short||s.text), answerText(s,"p1"), answerText(s,"p2"), diff(s)])) }
+    else if(it.type==="scale"||it.type==="yesno") body.push([it.n, ascii(it.short||it.text), answerText(it,"p1"), answerText(it,"p2"), it.type==="scale"?diff(it):""]);
+    else if(it.type==="text") body.push([it.n, ascii(it.short||it.text), {content:"ver abaixo",colSpan:3,styles:{halign:"center",textColor:[120,130,126]}}]);
+    else if(it.type==="body") body.push([it.n, ascii(it.short||it.text), {content:"ver diagrama na página seguinte",colSpan:3,styles:{halign:"center",textColor:[120,130,126]}}]);
+  });
+  doc.autoTable({startY:y, margin:{left:M,right:M}, head:[["Nº","Pergunta","Início","Agora","Diferença"]], body,
+    styles:{font:"helvetica",fontSize:9,cellPadding:2,lineColor:[217,224,221],lineWidth:0.2,textColor:[28,36,34],valign:"middle"},
+    headStyles:{fillColor:[47,93,80],textColor:255,fontStyle:"bold",halign:"center"},
+    columnStyles:{0:{cellWidth:11,halign:"center"},1:{cellWidth:"auto"},2:{cellWidth:18,halign:"center",fillColor:[232,236,245]},3:{cellWidth:18,halign:"center",fillColor:[227,239,234]},4:{cellWidth:20,halign:"center"}}});
+  y=doc.lastAutoTable.finalY+6;
+
+  const rows=scoreRows();
+  if(rows.length){
+    doc.autoTable({startY:y, margin:{left:M,right:M}, head:[["Pontuação","Início","Agora"]], body:rows.map(r=>[ascii(r[0]),r[1],r[2]]),
+      styles:{font:"helvetica",fontSize:9.5,cellPadding:2,lineColor:[217,224,221],lineWidth:0.2,textColor:[28,36,34]},
+      headStyles:{fillColor:[28,36,34],textColor:255,fontStyle:"bold"},
+      columnStyles:{1:{cellWidth:25,halign:"center",fontStyle:"bold"},2:{cellWidth:25,halign:"center",fontStyle:"bold"}}});
+    y=doc.lastAutoTable.finalY+4;
+    if(CFG.scoreNote){ doc.setFontSize(8); doc.setTextColor(93,106,102); doc.text(doc.splitTextToSize(ascii(CFG.scoreNote),W-2*M),M,y+2); y+=8 }
+  }
+
+  const texts=flatItems().filter(i=>i.type==="text");
+  texts.forEach(t=>{
+    if(y>250){ doc.addPage(); y=20 }
+    doc.setFont("helvetica","bold"); doc.setFontSize(10); doc.setTextColor(28,36,34);
+    const head=doc.splitTextToSize(t.n+" "+ascii(t.text),W-2*M); doc.text(head,M,y+4); y+=4+head.length*4.6;
+    [["Início","p1"],["Agora","p2"]].forEach(([lab,p])=>{
+      doc.setFont("helvetica","bold"); doc.setFontSize(9.5); doc.text(lab+":",M,y+2);
+      doc.setFont("helvetica","normal"); const ln=doc.splitTextToSize(ascii((state[p][t.id]||"").trim()||"(sem resposta)"),W-2*M-18); doc.text(ln,M+18,y+2); y+=2+ln.length*4.4+2;
+    });
+  });
+
+  if(flatItems().some(i=>i.type==="body")){
+    doc.addPage(); let yy=20;
+    doc.setFont("helvetica","bold"); doc.setFontSize(12); doc.setTextColor(28,36,34);
+    doc.text("2) Diagrama de dor", M, yy); yy+=5;
+    doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(93,106,102);
+    doc.text("Áreas pintadas em vermelho = onde sente dor. X = área que mais dói.", M, yy); yy+=6;
+    [["Parte 1 - Início do tratamento","p1"],["Parte 2 - Agora","p2"]].forEach(([lab,p])=>{
+      const c=document.createElement("canvas"); c.width=888; c.height=617; drawCanvas(p,c);
+      doc.setFont("helvetica","bold"); doc.setFontSize(10.5); doc.setTextColor(28,36,34); doc.text(lab,M,yy+4);
+      const marks = state.body[p].strokes.length || state.body[p].x;
+      if(!marks){ doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(120,130,126); doc.text("(nenhuma área marcada)",M+70,yy+4) }
+      const iw=W-2*M, ih=iw*617/888*0.78, iw2=ih*888/617;
+      doc.addImage(c.toDataURL("image/jpeg",0.85),"JPEG",M+(iw-iw2)/2,yy+7,iw2,ih); doc.setDrawColor(217,224,221); doc.rect(M+(iw-iw2)/2,yy+7,iw2,ih);
+      yy+=ih+16;
+    });
+  }
+
+  const n=doc.getNumberOfPages();
+  for(let i=1;i<=n;i++){ doc.setPage(i); doc.setFont("helvetica","normal"); doc.setFontSize(8); doc.setTextColor(140,150,146);
+    doc.text(ascii(CFG.short)+" - "+ascii(state.nome.trim()), M, 290); doc.text("Página "+i+" de "+n, W-M, 290, {align:"right"}) }
+  return doc;
+}
+function fileName(){
+  const nome=state.nome.trim().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^A-Za-z0-9]+/g,"_").replace(/^_|_$/g,"");
+  const d=new Date(), dd=String(d.getDate()).padStart(2,"0"), mm=String(d.getMonth()+1).padStart(2,"0");
+  return `${CFG.filePrefix}_${nome||"paciente"}_${dd}-${mm}-${d.getFullYear()}.pdf`;
+}
+
+async function setupSend(){
+  const msg=document.getElementById("send-msg");
+  if(!window.jspdf){ msg.textContent="Não foi possível carregar o gerador de PDF. Verifique a internet e recarregue a página."; return }
+  const bShare=document.getElementById("btn-share"), bSave=document.getElementById("btn-save"), bDl=document.getElementById("btn-download");
+  const inClaude = !!(window.claude && window.claude.use);
+  if(inClaude){
+    bSave.hidden=false;
+    bSave.onclick=async()=>{
+      const dl = await window.claude.use("downloads");
+      if(!dl){ msg.textContent="Salvar arquivo não está disponível nesta visualização."; return }
+      try{ const blob=buildPdf().output("blob"); await dl.save({filename:fileName(), data:blob}); msg.textContent="PDF salvo." }
+      catch(e){ msg.textContent = e&&e.code==="declined" ? "Download cancelado." : "Não foi possível salvar o PDF agora." }
+    };
+    return;
+  }
+  const testFile = new File([new Blob(["x"],{type:"application/pdf"})],"t.pdf",{type:"application/pdf"});
+  if(navigator.canShare && navigator.canShare({files:[testFile]})){
+    bShare.hidden=false;
+    bShare.onclick=async()=>{
+      const file=new File([buildPdf().output("blob")], fileName(), {type:"application/pdf"});
+      try{ await navigator.share({files:[file], title:CFG.short+" - "+state.nome.trim(), text:CFG.short+" respondido por "+state.nome.trim()}); msg.textContent="Enviado. Obrigada!" }
+      catch(e){ if(e.name!=="AbortError") msg.textContent="Não deu para compartilhar. Use “Baixar PDF” e envie o arquivo." }
+    };
+  }
+  bDl.hidden=false; if(bShare.hidden) bDl.classList.remove("ghost");
+  bDl.onclick=()=>{ try{ buildPdf().save(fileName()); msg.textContent="PDF baixado. Agora é só enviar o arquivo para a clínica." }catch(e){ msg.textContent="Erro ao gerar o PDF." } };
+}
+
+render();
+</script>
